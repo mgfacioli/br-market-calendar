@@ -14,6 +14,7 @@ class DayCountConvention(StrEnum):
     """
 
     ACT_252 = "ACT/252"
+    BUS_252 = "BUS/252"
     ACT_360 = "ACT/360"
     ACT_365 = "ACT/365"
     THIRTY_360 = "30/360"
@@ -30,7 +31,7 @@ def day_count(
     """
     convention = DayCountConvention(convention)
 
-    if convention == DayCountConvention.ACT_252:
+    if convention in (DayCountConvention.ACT_252, DayCountConvention.BUS_252):
         cal = calendar or BrazilFinancialCalendar()
         return cal.business_days_between(start, end)
 
@@ -56,7 +57,7 @@ def year_fraction(
     convention = DayCountConvention(convention)
     days = day_count(start, end, convention, calendar)
 
-    if convention == DayCountConvention.ACT_252:
+    if convention in (DayCountConvention.ACT_252, DayCountConvention.BUS_252):
         return days / 252
 
     if convention == DayCountConvention.ACT_360:

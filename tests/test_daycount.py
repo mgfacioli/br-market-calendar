@@ -100,3 +100,21 @@ def test_day_count_30_360_end_of_month_adjustment() -> None:
     )
 
     assert result == 0
+
+
+def test_day_count_bus_252_alias() -> None:
+    result = day_count("2026-01-01", "2026-01-08", DayCountConvention.BUS_252)
+
+    assert result == 5
+
+
+def test_year_fraction_bus_252_alias() -> None:
+    result = year_fraction("2026-01-01", "2026-01-08", DayCountConvention.BUS_252)
+
+    assert result == 5 / 252
+
+
+def test_day_count_bus_252_accepts_string() -> None:
+    result = day_count("2026-01-01", "2026-01-08", "BUS/252")
+
+    assert result == 5
