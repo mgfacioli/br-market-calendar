@@ -2,10 +2,17 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from datetime import date, timedelta
+from pathlib import Path
 
 from br_market_calendar.dates import is_weekday
 from br_market_calendar.formatters import parse_date
 from br_market_calendar.holidays import HolidayCalendar
+from br_market_calendar.io import (
+    ANBIMA_HOLIDAYS_URL,
+    read_anbima_csv,
+    read_anbima_excel,
+    read_anbima_url,
+)
 from br_market_calendar.types import DateLike
 
 
@@ -25,6 +32,30 @@ class BrazilFinancialCalendar:
         Create a calendar from a list of holidays.
         """
         return cls(holidays=HolidayCalendar.from_iterable(holidays))
+
+    @classmethod
+    def from_anbima_csv(cls, path: str | Path) -> BrazilFinancialCalendar:
+        """
+        Create a calendar from an ANBIMA-compatible CSV file.
+        """
+        return cls(holidays=read_anbima_csv(path))
+
+    @classmethod
+    def from_anbima_excel(cls, path: str | Path) -> BrazilFinancialCalendar:
+        """
+        Create a calendar from an ANBIMA Excel file.
+        """
+        return cls(holidays=read_anbima_excel(path))
+
+    @classmethod
+    def from_anbima_url(
+        cls,
+        url: str = ANBIMA_HOLIDAYS_URL,
+    ) -> BrazilFinancialCalendar:
+        """
+        Create a calendar from the official ANBIMA holiday URL.
+        """
+        return cls(holidays=read_anbima_url(url))
 
     def is_holiday(self, value: DateLike) -> bool:
         """
@@ -68,7 +99,9 @@ class BrazilFinancialCalendar:
         return current
 
     def previous_business_day(
-        self, value: DateLike, include_current: bool = False
+        self,
+        value: DateLike,
+        include_current: bool = False,
     ) -> date:
         """
         Return the previous business day.
@@ -125,8 +158,7 @@ class BrazilFinancialCalendar:
         """
         Return the number of business days between two dates.
 
-        By default, the start date is included and the end date is excluded,
-        following the common convention used by Python date ranges.
+        By default, the start date is included and the end date is excluded.
 
         If inclusive=True, both start and end dates are considered.
         """
