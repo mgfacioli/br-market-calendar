@@ -1,20 +1,24 @@
 # br-market-calendar
 
-Brazilian financial market calendar utilities for business days, holidays,
-calendar-day calculations, and date handling.
+Brazilian financial market calendar utilities for Python.
 
-The project focuses on the Brazilian financial market and aims to provide a
-simple, reliable, and well-tested API for both Brazilian and international users
-who need to work with Brazilian business days and financial calendars.
+`br-market-calendar` provides a simple, explicit, and well-tested API for working
+with Brazilian financial market dates, business days, holidays, day count
+conventions, and financial schedules.
 
-## Goals
+The project is designed for both Brazilian users and international users who
+need reliable date utilities for the Brazilian market.
 
-- Work with Brazilian financial market dates.
-- Support ANBIMA-compatible holiday calendars.
-- Separate date calculation from date formatting.
-- Keep the core lightweight and dependency-free.
-- Offer optional integration with pandas.
-- Provide a clear, tested, open-source Python API.
+## Features
+
+- Brazilian financial business day calendar
+- ANBIMA-compatible holiday readers
+- CSV, Excel, and URL holiday loading
+- Business day adjustment conventions
+- Day count conventions
+- Financial schedule generation
+- Date parsing and formatting helpers
+- Typed, tested, and lightweight core
 
 ## Installation
 
