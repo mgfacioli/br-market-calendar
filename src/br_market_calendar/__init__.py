@@ -1,5 +1,10 @@
 from br_market_calendar.calendar import BrazilFinancialCalendar
 from br_market_calendar.conventions import BusinessDayConvention
+from br_market_calendar.daycount import (
+    DayCountConvention,
+    day_count,
+    year_fraction,
+)
 from br_market_calendar.formatters import (
     BR_DATE_FORMAT,
     ISO_DATE_FORMAT,
@@ -30,4 +35,7 @@ __all__ = [
     "read_anbima_url",
     "to_brazilian",
     "to_iso",
+    "DayCountConvention",
+    "day_count",
+    "year_fraction",
 ]
