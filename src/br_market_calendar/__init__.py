@@ -20,6 +20,7 @@ from br_market_calendar.io import (
     read_anbima_excel,
     read_anbima_url,
 )
+from br_market_calendar.schedule import Frequency, generate_schedule
 
 __all__ = [
     "ANBIMA_HOLIDAYS_URL",
@@ -38,4 +39,6 @@ __all__ = [
     "DayCountConvention",
     "day_count",
     "year_fraction",
+    "Frequency",
+    "generate_schedule",
 ]
