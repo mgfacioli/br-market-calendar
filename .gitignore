@@ -41,3 +41,10 @@ uv.lock
 *.log
 .env
 .env.*
+
+# SSH keys
+id_*
+*.pem
+*.key
+gitpasswd
+gitpasswd.pub
