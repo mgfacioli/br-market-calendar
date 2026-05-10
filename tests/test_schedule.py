@@ -162,6 +162,23 @@ def test_generate_schedule_with_modified_following() -> None:
     ]
 
 
+def test_generate_schedule_with_end_of_month_rule() -> None:
+    result = generate_schedule(
+        "2026-01-31",
+        "2026-04-30",
+        Frequency.MONTHLY,
+        convention=BusinessDayConvention.MODIFIED_FOLLOWING,
+        end_of_month=True,
+    )
+
+    assert result == [
+        date(2026, 1, 30),
+        date(2026, 2, 27),
+        date(2026, 3, 31),
+        date(2026, 4, 30),
+    ]
+
+
 def test_generate_schedule_raises_when_end_before_start() -> None:
     with pytest.raises(ValueError, match="End date must be greater"):
         generate_schedule("2026-04-01", "2026-01-01")

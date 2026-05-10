@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import calendar as py_calendar
 from datetime import date
 from enum import StrEnum
 
@@ -39,6 +40,7 @@ def generate_schedule(
     convention: BusinessDayConvention | str = BusinessDayConvention.FOLLOWING,
     include_start: bool = True,
     include_end: bool = True,
+    end_of_month: bool = False,
 ) -> list[date]:
     """
     Generate an adjusted financial date schedule.
@@ -59,6 +61,10 @@ def generate_schedule(
         Whether to include the start date.
     include_end:
         Whether to include the end date.
+    end_of_month:
+        If True and the start date is the last calendar day of the month,
+        generated intermediate dates are also moved to the last calendar day
+        of their respective months before business-day adjustment.
 
     Returns
     -------
@@ -76,23 +82,60 @@ def generate_schedule(
     months = _FREQUENCY_TO_MONTHS[frequency]
     cal = calendar or BrazilFinancialCalendar()
 
+    raw_dates = _generate_raw_schedule_dates(
+        start_date=start_date,
+        end_date=end_date,
+        months=months,
+        include_start=include_start,
+        include_end=include_end,
+        end_of_month=end_of_month,
+    )
+
+    adjusted_dates = [cal.adjust(value, convention) for value in raw_dates]
+
+    return _deduplicate_preserving_order(adjusted_dates)
+
+
+def _generate_raw_schedule_dates(
+    *,
+    start_date: date,
+    end_date: date,
+    months: int,
+    include_start: bool,
+    include_end: bool,
+    end_of_month: bool,
+) -> list[date]:
     raw_dates: list[date] = []
+    use_end_of_month = end_of_month and _is_end_of_month(start_date)
 
     if include_start:
         raw_dates.append(start_date)
 
     current = start_date + relativedelta(months=months)
 
+    if use_end_of_month:
+        current = _end_of_month(current)
+
     while current < end_date:
         raw_dates.append(current)
         current = current + relativedelta(months=months)
 
+        if use_end_of_month:
+            current = _end_of_month(current)
+
     if include_end:
         raw_dates.append(end_date)
 
-    adjusted_dates = [cal.adjust(value, convention) for value in raw_dates]
+    return raw_dates
 
-    return _deduplicate_preserving_order(adjusted_dates)
+
+def _is_end_of_month(value: date) -> bool:
+    return value.day == py_calendar.monthrange(value.year, value.month)[1]
+
+
+def _end_of_month(value: date) -> date:
+    last_day = py_calendar.monthrange(value.year, value.month)[1]
+    return value.replace(day=last_day)
 
 
 def _deduplicate_preserving_order(values: list[date]) -> list[date]:
