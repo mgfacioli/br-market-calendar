@@ -21,6 +21,7 @@ from br_market_calendar.io import (
     read_anbima_url,
 )
 from br_market_calendar.schedule import Frequency, generate_schedule
+from br_market_calendar.settlement import settlement_date
 
 __all__ = [
     "ANBIMA_HOLIDAYS_URL",
@@ -41,4 +42,5 @@ __all__ = [
     "year_fraction",
     "Frequency",
     "generate_schedule",
+    "settlement_date",
 ]
