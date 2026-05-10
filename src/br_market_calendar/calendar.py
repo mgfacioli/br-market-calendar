@@ -4,6 +4,7 @@ from dataclasses import dataclass, field
 from datetime import date, timedelta
 from pathlib import Path
 
+from br_market_calendar.conventions import BusinessDayConvention
 from br_market_calendar.dates import is_weekday
 from br_market_calendar.formatters import parse_date
 from br_market_calendar.holidays import HolidayCalendar
@@ -184,3 +185,53 @@ class BrazilFinancialCalendar:
             count += step
 
         return count
+
+    def adjust(
+        self,
+        value: DateLike,
+        convention: BusinessDayConvention | str = BusinessDayConvention.FOLLOWING,
+    ) -> date:
+        """
+        Adjust a date according to a business day convention.
+
+        Supported conventions:
+
+        - following
+        - preceding
+        - modified_following
+        - modified_preceding
+        - unadjusted
+        """
+        parsed = parse_date(value)
+        convention = BusinessDayConvention(convention)
+
+        if convention == BusinessDayConvention.UNADJUSTED:
+            return parsed
+
+        if self.is_business_day(parsed):
+            return parsed
+
+        if convention == BusinessDayConvention.FOLLOWING:
+            return self.next_business_day(parsed)
+
+        if convention == BusinessDayConvention.PRECEDING:
+            return self.previous_business_day(parsed)
+
+        if convention == BusinessDayConvention.MODIFIED_FOLLOWING:
+            adjusted = self.next_business_day(parsed)
+
+            if adjusted.month != parsed.month:
+                return self.previous_business_day(parsed)
+
+            return adjusted
+
+        if convention == BusinessDayConvention.MODIFIED_PRECEDING:
+            adjusted = self.previous_business_day(parsed)
+
+            if adjusted.month != parsed.month:
+                return self.next_business_day(parsed)
+
+            return adjusted
+
+        msg = f"Unsupported business day convention: {convention!r}"
+        raise ValueError(msg)

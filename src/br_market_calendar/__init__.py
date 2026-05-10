@@ -1,4 +1,5 @@
 from br_market_calendar.calendar import BrazilFinancialCalendar
+from br_market_calendar.conventions import BusinessDayConvention
 from br_market_calendar.formatters import (
     BR_DATE_FORMAT,
     ISO_DATE_FORMAT,
@@ -20,6 +21,7 @@ __all__ = [
     "BR_DATE_FORMAT",
     "ISO_DATE_FORMAT",
     "BrazilFinancialCalendar",
+    "BusinessDayConvention",
     "HolidayCalendar",
     "format_date",
     "parse_date",
