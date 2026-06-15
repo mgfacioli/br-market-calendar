@@ -30,11 +30,17 @@ def _is_date_like(value: object) -> TypeGuard[DateLike]:
 
 
 def _holiday_calendar_from_values(values: Iterable[object]) -> HolidayCalendar:
-    holidays = {
-        parse_date(value)
-        for value in values
-        if value is not None and _is_date_like(value) and str(value).strip()
-    }
+    holidays = set()
+
+    for value in values:
+        if value is None or not _is_date_like(value) or not str(value).strip():
+            continue
+
+        try:
+            holidays.add(parse_date(value))
+        except ValueError:
+            continue
+
     return HolidayCalendar(holidays)
 
 

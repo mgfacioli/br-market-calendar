@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.2] - 2026-06-15
+
+### Fixed
+
+- Ignore non-date footer rows in ANBIMA CSV and Excel readers.
+- Include `xlrd` in the `excel` extra for `.xls` files such as the official
+  ANBIMA holiday URL.
+
 ## [0.2.1] - 2026-06-15
 
 ### Fixed
