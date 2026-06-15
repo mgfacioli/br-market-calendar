@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.1] - 2026-06-15
+
+### Fixed
+
+- Declare `python-dateutil` as a runtime dependency so fresh installations can
+  import scheduling utilities successfully.
+
 ## [0.2.0] - 2026-06-15
 
 ### Added

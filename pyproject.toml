@@ -1,6 +1,6 @@
 [project]
 name = "br-market-calendar"
-version = "0.2.0"
+version = "0.2.1"
 description = "Brazilian financial market calendar utilities for business days, holidays, and date operations."
 readme = "README.md"
 requires-python = ">=3.11"
@@ -31,7 +31,9 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 
-dependencies = []
+dependencies = [
+    "python-dateutil>=2.9",
+]
 
 [project.optional-dependencies]
 pandas = [
