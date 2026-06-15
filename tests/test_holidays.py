@@ -52,16 +52,23 @@ def test_add_holiday() -> None:
     assert holidays.is_holiday("2026-04-21") is True
 
 
+def test_add_holiday_with_name() -> None:
+    holidays = HolidayCalendar()
+
+    holidays.add_holiday("2026-04-21", "Tiradentes")
+
+    assert holidays.is_holiday("2026-04-21") is True
+    assert holidays.holiday_name("2026-04-21") == "Tiradentes"
+
+
 def test_remove_holiday() -> None:
-    holidays = HolidayCalendar.from_iterable(
-        [
-            "2026-04-21",
-        ]
-    )
+    holidays = HolidayCalendar()
+    holidays.add_holiday("2026-04-21", "Tiradentes")
 
     holidays.remove_holiday("2026-04-21")
 
     assert holidays.is_holiday("2026-04-21") is False
+    assert holidays.holiday_name("2026-04-21") is None
 
 
 def test_remove_missing_holiday_raises() -> None:

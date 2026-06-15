@@ -90,6 +90,15 @@ def test_holidays_between() -> None:
     assert dict(result) == {date(2026, 1, 1): "2026-01-01"}
 
 
+def test_holidays_between_uses_names_when_available() -> None:
+    cal = BrazilFinancialCalendar()
+    cal.holidays.add_holiday("2026-02-16", "Carnaval")
+
+    result = cal.holidays_between("2026-02-01", "2026-02-28")
+
+    assert dict(result) == {date(2026, 2, 16): "Carnaval"}
+
+
 def test_weekday_occurrences() -> None:
     cal = BrazilFinancialCalendar()
 

@@ -24,6 +24,7 @@ def test_read_anbima_csv(tmp_path) -> None:
     assert holidays.is_holiday(date(2026, 1, 1)) is True
     assert holidays.is_holiday(date(2026, 12, 25)) is True
     assert holidays.is_holiday(date(2026, 1, 2)) is False
+    assert holidays.holiday_name(date(2026, 12, 25)) == "Natal"
 
 
 def test_read_anbima_csv_ignores_footer_rows(tmp_path) -> None:
@@ -41,6 +42,7 @@ def test_read_anbima_csv_ignores_footer_rows(tmp_path) -> None:
 
     assert holidays.is_holiday(date(2026, 1, 1)) is True
     assert len(holidays) == 1
+    assert holidays.holiday_name(date(2026, 1, 1)) == "ConfraternizaÃ§Ã£o Universal"
 
 
 def test_read_anbima_csv_missing_date_column(tmp_path) -> None:
@@ -68,6 +70,7 @@ def test_read_anbima_excel(tmp_path) -> None:
 
     assert holidays.is_holiday(date(2026, 1, 1)) is True
     assert holidays.is_holiday(date(2026, 12, 25)) is True
+    assert holidays.holiday_name(date(2026, 12, 25)) == "Natal"
 
 
 def test_read_anbima_excel_ignores_footer_rows(tmp_path) -> None:
@@ -85,6 +88,7 @@ def test_read_anbima_excel_ignores_footer_rows(tmp_path) -> None:
 
     assert holidays.is_holiday(date(2026, 1, 1)) is True
     assert len(holidays) == 1
+    assert holidays.holiday_name(date(2026, 1, 1)) == "ConfraternizaÃ§Ã£o Universal"
 
 
 def test_read_anbima_excel_missing_date_column(tmp_path) -> None:

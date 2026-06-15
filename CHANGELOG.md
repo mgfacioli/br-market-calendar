@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.3] - 2026-06-15
+
+### Added
+
+- Preserve holiday names from ANBIMA CSV and Excel readers when a description
+  column is available.
+- Return holiday names from `BrazilFinancialCalendar.holidays_between`, falling
+  back to the ISO date when no name is available.
+- Add `HolidayCalendar.holiday_name` and optional names in `add_holiday`.
+
 ## [0.2.2] - 2026-06-15
 
 ### Fixed

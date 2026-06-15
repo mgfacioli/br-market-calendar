@@ -17,9 +17,14 @@ class HolidayCalendar:
     """
 
     holidays: set[date] = field(default_factory=set)
+    holiday_names: dict[date, str] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
         self.holidays = {parse_date(value) for value in self.holidays}
+        self.holiday_names = {
+            parse_date(value): name for value, name in self.holiday_names.items()
+        }
+        self.holidays.update(self.holiday_names)
 
     @classmethod
     def from_iterable(cls, values: list[DateLike]) -> HolidayCalendar:
@@ -35,11 +40,15 @@ class HolidayCalendar:
         parsed = parse_date(value)
         return parsed in self.holidays
 
-    def add_holiday(self, value: DateLike) -> None:
+    def add_holiday(self, value: DateLike, name: str | None = None) -> None:
         """
         Add a holiday to the calendar.
         """
-        self.holidays.add(parse_date(value))
+        parsed = parse_date(value)
+        self.holidays.add(parsed)
+
+        if name is not None:
+            self.holiday_names[parsed] = name
 
     def remove_holiday(self, value: DateLike) -> None:
         """
@@ -50,7 +59,16 @@ class HolidayCalendar:
         KeyError
             If the holiday does not exist.
         """
-        self.holidays.remove(parse_date(value))
+        parsed = parse_date(value)
+        self.holidays.remove(parsed)
+        self.holiday_names.pop(parsed, None)
+
+    def holiday_name(self, value: DateLike) -> str | None:
+        """
+        Return the holiday name, if one is available.
+        """
+        parsed = parse_date(value)
+        return self.holiday_names.get(parsed)
 
     def __contains__(self, value: object) -> bool:
         """

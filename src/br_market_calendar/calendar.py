@@ -144,11 +144,11 @@ class BrazilFinancialCalendar:
         """
         Return holidays in a period.
 
-        Holiday names are not stored by ``HolidayCalendar`` yet, so the holiday
-        date is also used as the value.
+        If a holiday name is available, it is returned as the value. Otherwise,
+        the ISO date is used as a fallback.
         """
         holidays = {
-            current: current.isoformat()
+            current: self.holidays.holiday_name(current) or current.isoformat()
             for current in self.calendar_days(start, end, inclusive=inclusive)
             if self.is_holiday(current)
         }
