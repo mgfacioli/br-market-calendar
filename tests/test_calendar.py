@@ -54,6 +54,58 @@ def test_is_non_business_day() -> None:
     assert cal.is_non_business_day("2026-01-02") is False
 
 
+def test_calendar_days() -> None:
+    cal = BrazilFinancialCalendar()
+
+    result = cal.calendar_days("2026-01-01", "2026-01-03")
+
+    assert result == [
+        date(2026, 1, 1),
+        date(2026, 1, 2),
+        date(2026, 1, 3),
+    ]
+
+
+def test_weekdays_list_ignores_holidays() -> None:
+    cal = BrazilFinancialCalendar.from_holidays(["2026-01-02"])
+
+    result = cal.weekdays("2026-01-01", "2026-01-04")
+
+    assert result == [date(2026, 1, 1), date(2026, 1, 2)]
+
+
+def test_business_days_list_excludes_weekends_and_holidays() -> None:
+    cal = BrazilFinancialCalendar.from_holidays(["2026-01-01"])
+
+    result = cal.business_days("2026-01-01", "2026-01-05")
+
+    assert result == [date(2026, 1, 2), date(2026, 1, 5)]
+
+
+def test_holidays_between() -> None:
+    cal = BrazilFinancialCalendar.from_holidays(["2026-01-01", "2026-12-25"])
+
+    result = cal.holidays_between("2026-01-01", "2026-01-31")
+
+    assert dict(result) == {date(2026, 1, 1): "2026-01-01"}
+
+
+def test_weekday_occurrences() -> None:
+    cal = BrazilFinancialCalendar()
+
+    result = cal.weekday_occurrences("2026-01-01", "2026-01-15", 2)
+
+    assert result == [date(2026, 1, 6), date(2026, 1, 13)]
+
+
+def test_business_days_per_month() -> None:
+    cal = BrazilFinancialCalendar.from_holidays(["2026-01-01"])
+
+    result = cal.business_days_per_month("2026-01-01", "2026-02-03")
+
+    assert dict(result) == {"01/2026": 21, "02/2026": 2}
+
+
 def test_next_business_day_from_holiday() -> None:
     cal = BrazilFinancialCalendar.from_holidays(["2026-01-01"])
 

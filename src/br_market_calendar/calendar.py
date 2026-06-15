@@ -1,11 +1,12 @@
 from __future__ import annotations
 
+from collections import OrderedDict
 from dataclasses import dataclass, field
 from datetime import date, timedelta
 from pathlib import Path
 
 from br_market_calendar.conventions import BusinessDayConvention
-from br_market_calendar.dates import is_weekday
+from br_market_calendar.dates import date_range, first_day_of_month, is_weekday
 from br_market_calendar.formatters import parse_date
 from br_market_calendar.holidays import HolidayCalendar
 from br_market_calendar.io import (
@@ -75,6 +76,124 @@ class BrazilFinancialCalendar:
         Return True if the date is not a business day.
         """
         return not self.is_business_day(value)
+
+    def calendar_days(
+        self,
+        start: DateLike,
+        end: DateLike | None = None,
+        *,
+        days: int | None = None,
+        inclusive: bool = True,
+    ) -> list[date]:
+        """
+        Return calendar days in a period.
+        """
+        return date_range(start, end, days=days, inclusive=inclusive)
+
+    def weekdays(
+        self,
+        start: DateLike,
+        end: DateLike | None = None,
+        *,
+        days: int | None = None,
+        inclusive: bool = True,
+    ) -> list[date]:
+        """
+        Return Monday-Friday dates in a period, ignoring holidays.
+        """
+        return [
+            current
+            for current in self.calendar_days(
+                start,
+                end,
+                days=days,
+                inclusive=inclusive,
+            )
+            if is_weekday(current)
+        ]
+
+    def business_days(
+        self,
+        start: DateLike,
+        end: DateLike | None = None,
+        *,
+        days: int | None = None,
+        inclusive: bool = True,
+    ) -> list[date]:
+        """
+        Return Brazilian financial business days in a period.
+        """
+        return [
+            current
+            for current in self.calendar_days(
+                start,
+                end,
+                days=days,
+                inclusive=inclusive,
+            )
+            if self.is_business_day(current)
+        ]
+
+    def holidays_between(
+        self,
+        start: DateLike,
+        end: DateLike,
+        *,
+        inclusive: bool = True,
+    ) -> OrderedDict[date, str]:
+        """
+        Return holidays in a period.
+
+        Holiday names are not stored by ``HolidayCalendar`` yet, so the holiday
+        date is also used as the value.
+        """
+        holidays = {
+            current: current.isoformat()
+            for current in self.calendar_days(start, end, inclusive=inclusive)
+            if self.is_holiday(current)
+        }
+        return OrderedDict(sorted(holidays.items(), key=lambda item: item[0]))
+
+    def weekday_occurrences(
+        self,
+        start: DateLike,
+        end: DateLike,
+        weekday: int,
+        *,
+        inclusive: bool = True,
+    ) -> list[date]:
+        """
+        Return all dates matching an ISO weekday in a period.
+
+        Monday is 1 and Sunday is 7.
+        """
+        if weekday < 1 or weekday > 7:
+            msg = "weekday must be an integer between 1 (Monday) and 7 (Sunday)."
+            raise ValueError(msg)
+
+        return [
+            current
+            for current in self.calendar_days(start, end, inclusive=inclusive)
+            if current.isoweekday() == weekday
+        ]
+
+    def business_days_per_month(
+        self,
+        start: DateLike,
+        end: DateLike,
+        *,
+        inclusive: bool = True,
+    ) -> OrderedDict[str, int]:
+        """
+        Return the number of business days per month in a period.
+        """
+        counts: dict[str, int] = {}
+
+        for current in self.business_days(start, end, inclusive=inclusive):
+            key = first_day_of_month(current).strftime("%m/%Y")
+            counts[key] = counts.get(key, 0) + 1
+
+        return OrderedDict(sorted(counts.items(), key=lambda item: item[0]))
 
     def next_business_day(self, value: DateLike, include_current: bool = False) -> date:
         """

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from datetime import date, datetime
 
 from br_market_calendar.types import DateLike
@@ -57,9 +58,14 @@ def parse_date(value: DateLike, date_format: str | None = None) -> date:
         except ValueError:
             continue
 
+    if re.fullmatch(r"\d{2}\D+\d{2}\D+\d{4}", text):
+        normalized = re.sub(r"\D+", "/", text)
+        return datetime.strptime(normalized, BR_DATE_FORMAT).date()
+
     msg = (
         f"Could not parse date {value!r}. "
-        f"Expected formats: {ISO_DATE_FORMAT!r} or {BR_DATE_FORMAT!r}."
+        f"Expected formats: {ISO_DATE_FORMAT!r}, {BR_DATE_FORMAT!r}, "
+        "or a day-first date with a non-digit separator."
     )
     raise ValueError(msg)
 
