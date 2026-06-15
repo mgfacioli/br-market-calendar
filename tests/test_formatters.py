@@ -59,9 +59,15 @@ def test_parse_date_rejects_empty_string() -> None:
         parse_date("")
 
 
+def test_parse_date_accepts_day_first_dates_with_other_separators() -> None:
+    assert parse_date("31-01-2026") == date(2026, 1, 31)
+    assert parse_date("31:01:2026") == date(2026, 1, 31)
+    assert parse_date("31 01 2026") == date(2026, 1, 31)
+
+
 def test_parse_date_rejects_invalid_string() -> None:
     with pytest.raises(ValueError, match="Could not parse date"):
-        parse_date("31-01-2026")
+        parse_date("2026/01/31")
 
 
 def test_parse_date_rejects_unsupported_type() -> None:

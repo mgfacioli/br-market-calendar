@@ -1,5 +1,16 @@
 from br_market_calendar.calendar import BrazilFinancialCalendar
 from br_market_calendar.conventions import BusinessDayConvention
+from br_market_calendar.dates import (
+    add_days,
+    date_range,
+    days_between,
+    first_day_of_month,
+    is_weekday,
+    is_weekend,
+    last_day_of_month,
+    weekday_name,
+    weekdays,
+)
 from br_market_calendar.daycount import (
     DayCountConvention,
     day_count,
@@ -29,7 +40,14 @@ __all__ = [
     "ISO_DATE_FORMAT",
     "BrazilFinancialCalendar",
     "BusinessDayConvention",
+    "date_range",
+    "days_between",
+    "add_days",
+    "first_day_of_month",
     "HolidayCalendar",
+    "is_weekday",
+    "is_weekend",
+    "last_day_of_month",
     "format_date",
     "parse_date",
     "read_anbima_csv",
@@ -43,4 +61,6 @@ __all__ = [
     "Frequency",
     "generate_schedule",
     "settlement_date",
+    "weekday_name",
+    "weekdays",
 ]
